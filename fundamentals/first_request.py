@@ -2,8 +2,19 @@ import json
 import httpx
 from datetime import datetime, timedelta
 
-response = httpx.get('https://edu.donstu.ru/api/Rasp?idGroup=73007&sdate=2026-10-20', timeout=5)
-response.raise_for_status()
+try:
+    response = httpx.get('https://edu.donstu.ru/api/Rasp?idGroup=73007&sdate=2026-10-20',
+                         timeout=5)
+    response.raise_for_status()
+except httpx.TimeoutException:
+    print("Сервер не ответил вовремя")
+    exit(-1)
+except httpx.RequestError:
+    print("Не удалось выполнить запрос.")
+    exit(-1)
+except httpx.HTTPStatusError:
+    print("Сервер вернул ошибочный статус")
+    exit(-1)
 j = response.json()
 with open('response.json', 'w', encoding='utf-8') as file:
     file.write(json.dumps(j, indent=4, ensure_ascii=False))
