@@ -15,6 +15,9 @@ for attempt in range(1, 4):
         print("Сервер вернул ошибочный статус")
     else:
         break
+else:
+    print("Все попытки неудачны")
+    raise SystemExit(1)
 j = response.json()
 with open('response.json', 'w', encoding='utf-8') as file:
     file.write(json.dumps(j, indent=4, ensure_ascii=False))
