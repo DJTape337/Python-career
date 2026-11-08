@@ -1,7 +1,10 @@
 import json
+import time
 import httpx
 from datetime import datetime, timedelta
 for attempt in range(1, 4):
+    if attempt != 1 and attempt != 3:
+        time.sleep(2)
     print(f'Попытка {attempt}')
     try:
         response = httpx.get('https://edu.donstu.ru/api/Rasp?idGroup=73007&sdate=2026-10-20',
