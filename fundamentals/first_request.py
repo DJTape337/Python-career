@@ -3,8 +3,6 @@ import time
 import httpx
 from datetime import datetime, timedelta
 for attempt in range(1, 4):
-    if attempt != 1 and attempt != 3:
-        time.sleep(2)
     print(f'Попытка {attempt}')
     try:
         response = httpx.get('https://edu.donstu.ru/api/Rasp?idGroup=73007&sdate=2026-10-20',
@@ -12,10 +10,13 @@ for attempt in range(1, 4):
         response.raise_for_status()
     except httpx.TimeoutException:
         print("Сервер не ответил вовремя")
+        time.sleep(2)
     except httpx.RequestError:
         print("Не удалось выполнить запрос.")
+        time.sleep(2)
     except httpx.HTTPStatusError:
         print("Сервер вернул ошибочный статус")
+        time.sleep(2)
     else:
         break
 else:
