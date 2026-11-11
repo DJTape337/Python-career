@@ -4,7 +4,7 @@ import httpx
 from datetime import datetime, timedelta
 last_error = False
 for attempt in range(1, 4):
-    if last_error and 4 - attempt >= 1:
+    if last_error:
         time.sleep(2)
 
     last_error = False
