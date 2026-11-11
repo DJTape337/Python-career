@@ -2,7 +2,12 @@ import json
 import time
 import httpx
 from datetime import datetime, timedelta
+last_error = False
 for attempt in range(1, 4):
+    if last_error and 4 - attempt >= 1:
+        time.sleep(2)
+
+    last_error = False
     print(f'Попытка {attempt}')
     try:
         response = httpx.get('https://edu.donstu.ru/api/Rasp?idGroup=73007&sdate=2026-10-20',
@@ -10,13 +15,13 @@ for attempt in range(1, 4):
         response.raise_for_status()
     except httpx.TimeoutException:
         print("Сервер не ответил вовремя")
-        time.sleep(2)
+        last_error = True
     except httpx.RequestError:
         print("Не удалось выполнить запрос.")
-        time.sleep(2)
+        last_error = True
     except httpx.HTTPStatusError:
         print("Сервер вернул ошибочный статус")
-        time.sleep(2)
+        last_error = True
     else:
         break
 else:
