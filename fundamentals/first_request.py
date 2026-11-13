@@ -24,10 +24,14 @@ for attempt in range(1, 4):
         status = response.status_code
         match status:
             case 429:
-                retime = response.headers.get("Retry-After")
-                if retime:
-                    retry_time = int(retime)
                 print("Ошибка. Слишком много запросов.")
+                try:
+                    retime = response.headers.get("Retry-After")
+                    if retime:
+                        retry_time = int(retime)
+                except ValueError:
+                    retry_time = 2
+
             case 404:
                 print("Ошибка. Ресурс не найден")
                 break
