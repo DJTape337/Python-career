@@ -24,9 +24,9 @@ for attempt in range(1, 4):
         status = response.status_code
         match status:
             case 429:
-                retime = int(response.headers.get("Retry-After"))
+                retime = response.headers.get("Retry-After")
                 if retime:
-                    retry_time = retime
+                    retry_time = int(retime)
                 print("Ошибка. Слишком много запросов.")
             case 404:
                 print("Ошибка. Ресурс не найден")
@@ -36,11 +36,13 @@ for attempt in range(1, 4):
                 break
             case 502:
                 print("Ошибка запроса к вышестоящему серверу")
-                break
             case 503:
                 print("Ошибка. Сервис временно недоступен")
             case 500:
                 print("Внутренняя ошибка сервера.")
+            case _:
+                print("Ошибка при получении ответа от сервера.")
+                break
     except httpx.TimeoutException:
         print("Превышено ожидание ответа сервера")
         last_error = True
