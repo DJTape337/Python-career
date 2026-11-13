@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 last_error = False
 retry_time = 2
 success = False
+r_timeout = 5
 for attempt in range(1, 4):
     if last_error:
         time.sleep(retry_time)
@@ -16,7 +17,7 @@ for attempt in range(1, 4):
     print(f'Попытка {attempt}')
     try:
         response = httpx.get('https://edu.donstu.ru/api/Rasp?idGroup=73007&sdate=2026-10-20',
-                             timeout=5)
+                             timeout=r_timeout)
         response.raise_for_status()
     except httpx.HTTPStatusError as e:
         last_error = True
@@ -31,6 +32,14 @@ for attempt in range(1, 4):
                         retry_time = int(retime)
                 except ValueError:
                     retry_time = 2
+
+            case 408:
+                print("Таймаут отправления запроса")
+                retry_time = 0
+
+            case 504:
+                print("Таймаут апстрим сервера")
+                r_timeout = 10
 
             case 404:
                 print("Ошибка. Ресурс не найден")
