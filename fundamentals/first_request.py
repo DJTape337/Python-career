@@ -1,5 +1,4 @@
 import json
-import time
 import httpx
 import asyncio
 from datetime import datetime, timedelta
@@ -84,4 +83,6 @@ async def main():
     else:
         print("Перерыв не подходит")
 
+if __name__ == "__main__":
+    asyncio.run(main())
 
