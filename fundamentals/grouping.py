@@ -7,18 +7,19 @@ class Rasp:
         grouped = self._group_by_date(rasp)
         try:
             self._sort_pairs(grouped)
-            self.week_start = min(list(grouped.keys()))
-            self.week_end = max(list(grouped.keys()))
-            self.rasp = grouped
-            self.void_week = False
+            self.__week_start = min(list(grouped.keys()))
+            self.__week_end = max(list(grouped.keys()))
         except ValueError:
-            self.void_week = True
+            self.__void_week = True
+        self.__rasp = grouped
+        self.__void_week = False
+
 
     def __str__(self):
-        if self.void_week:
+        if self.__void_week:
             return "На этой неделе пар нет"
         out = ''
-        for date, pairs in self.rasp.items():
+        for date, pairs in self.__rasp.items():
             out += f'{date}:\n\n'
             for pair in pairs:
                 out += str(pair)
