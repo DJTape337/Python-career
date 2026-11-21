@@ -3,6 +3,7 @@ import httpx
 import asyncio
 from datetime import datetime, timedelta
 
+
 async def main():
     last_error = False
     retry_time = 2
@@ -82,6 +83,7 @@ async def main():
         print("Перерыв подходит")
     else:
         print("Перерыв не подходит")
+    print(json.dumps(rasp, indent=4, ensure_ascii=False))
 
 if __name__ == "__main__":
     asyncio.run(main())
