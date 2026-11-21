@@ -2,13 +2,40 @@ import httpx
 import asyncio
 from datetime import datetime, time
 
-class Pair:
-    date = ''
-    start_time = ''
-    end_time = ''
-    tutor = ''
-    cab = 0
+class Rasp:
+    def __init__(self, rasp):
+        grouped = self._group_by_date(rasp)
+        self._sort_pairs(grouped)
+        self.week_start = list(grouped.keys())[0]
+        self.week_end = list(grouped.keys())[-1]
+        self.rasp = grouped
 
+    def __str__(self):
+        out = ''
+        for date, pairs in self.rasp.items():
+            out += f'{date}:\n\n'
+            for pair in pairs:
+                out += str(pair)
+                out += '\n\n'
+        return out
+
+    @staticmethod
+    def _group_by_date(rasp):
+        grouped = dict()
+        for pair in rasp:
+            p = Pair(pair)
+            date = str(p.date)
+            if not date in grouped:
+                grouped[date] = []
+            grouped[date].append(p)
+        return grouped
+
+    @staticmethod
+    def _sort_pairs(grouped_pairs):
+        for pairs in grouped_pairs.values():
+            pairs.sort(key=lambda pair: pair.start_time)
+
+class Pair:
     def __init__(self, pair: dict):
         self.date = datetime.fromisoformat(pair['дата']).date()
         self.start_time = time.fromisoformat(pair['начало'])
@@ -93,19 +120,12 @@ async def get_rasp(url: str, date, group_id=73007):
         data = response.json()
         return data['data']['rasp']
 
-async def group_by_date(rasp):
-    grouped = dict()
-    for pair in rasp:
-        p = Pair(pair)
-        date = str(p.date)
-        if not date in grouped:
-            grouped[date] = []
-        grouped[date].append(p)
-    return grouped
+
 
 async def main():
-    rasp = await get_rasp("https://edu.donstu.ru/api/Rasp", date="2026-11-16")
-    grouped = await group_by_date(rasp)
-    print(grouped["2026-11-16"][0])
+    r = await get_rasp("https://edu.donstu.ru/api/Rasp", date="2026-11-16")
+    rasp = Rasp(r)
+    print(rasp)
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
