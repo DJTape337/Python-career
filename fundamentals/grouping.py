@@ -5,12 +5,18 @@ from datetime import datetime, time
 class Rasp:
     def __init__(self, rasp):
         grouped = self._group_by_date(rasp)
-        self._sort_pairs(grouped)
-        self.week_start = list(grouped.keys())[0]
-        self.week_end = list(grouped.keys())[-1]
-        self.rasp = grouped
+        try:
+            self._sort_pairs(grouped)
+            self.week_start = min(list(grouped.keys()))
+            self.week_end = max(list(grouped.keys()))
+            self.rasp = grouped
+            self.void_week = False
+        except ValueError:
+            self.void_week = True
 
     def __str__(self):
+        if self.void_week:
+            return "На этой неделе пар нет"
         out = ''
         for date, pairs in self.rasp.items():
             out += f'{date}:\n\n'
