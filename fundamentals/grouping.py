@@ -5,14 +5,14 @@ from datetime import datetime, time
 class Rasp:
     def __init__(self, rasp):
         grouped = self._group_by_date(rasp)
-        try:
+        if grouped:
             self._sort_pairs(grouped)
             self.__week_start = min(list(grouped.keys()))
             self.__week_end = max(list(grouped.keys()))
-        except ValueError:
+            self.__void_week = False
+            self.__rasp = grouped
+        else:
             self.__void_week = True
-        self.__rasp = grouped
-        self.__void_week = False
 
 
     def __str__(self):
