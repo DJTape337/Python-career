@@ -4,6 +4,9 @@ from datetime import datetime, time
 
 class Rasp:
     def __init__(self, rasp):
+        self.__week_start = None
+        self.__week_end = None
+        self.__rasp = None
         grouped = self._group_by_date(rasp)
         if grouped:
             self._sort_pairs(grouped)
