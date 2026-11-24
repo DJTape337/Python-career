@@ -6,12 +6,12 @@ class Rasp:
     def __init__(self, rasp):
         self.__week_start = None
         self.__week_end = None
-        self.__rasp = None
+        self.__rasp = {}
         grouped = self._group_by_date(rasp)
         if grouped:
             self._sort_pairs(grouped)
-            self.__week_start = min(list(grouped.keys()))
-            self.__week_end = max(list(grouped.keys()))
+            self.__week_start = min([datetime.fromisoformat(date) for date in grouped.keys()])
+            self.__week_end = max([datetime.fromisoformat(date) for date in grouped.keys()])
             self.__void_week = False
             self.__rasp = grouped
         else:
