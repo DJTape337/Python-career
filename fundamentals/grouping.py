@@ -1,6 +1,7 @@
 import httpx
 import asyncio
 from datetime import datetime, time
+import pandas as pd
 
 class Rasp:
     def __init__(self, rasp):
@@ -16,6 +17,29 @@ class Rasp:
             self.__rasp = grouped
         else:
             self.__void_week = True
+
+    def get_breaks(self, date):
+        pairs = self.get_pairs(date)
+        if not pairs or len(pairs) < 2:
+            return None
+        date = datetime.fromisoformat(date).date()
+        out = {
+            "Перерыв": [],
+            "Начало": [],
+            "Конец": [],
+            "Продолжительность": []
+        }
+        for i in range(len(pairs) - 1):
+            brnum = i + 1
+            brstart = pairs[i].end_time
+            brend = pairs[i + 1].start_time
+            brlen = (datetime.combine(date, brend) - datetime.combine(date, brstart)).total_seconds() / 60
+            out['Перерыв'].append(brnum)
+            out['Начало'].append(brstart)
+            out['Конец'].append(brend)
+            out['Продолжительность'].append(int(brlen))
+        return pd.DataFrame(out)
+
 
 
     def __str__(self):
@@ -44,6 +68,11 @@ class Rasp:
     def _sort_pairs(grouped_pairs):
         for pairs in grouped_pairs.values():
             pairs.sort(key=lambda pair: pair.start_time)
+
+    def get_pairs(self, date):
+        if not date in self.__rasp:
+            return None
+        return self.__rasp[date]
 
 class Pair:
     def __init__(self, pair: dict):
@@ -135,7 +164,8 @@ async def get_rasp(url: str, date, group_id=73007):
 async def main():
     r = await get_rasp("https://edu.donstu.ru/api/Rasp", date="2026-11-16")
     rasp = Rasp(r)
-    print(rasp)
+    print(rasp.get_breaks("2026-11-16"))
+
 
 if __name__ == "__main__":
     asyncio.run(main())
