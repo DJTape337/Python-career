@@ -20,8 +20,8 @@ class TelegramNotifier(Notifier):
         print(f'Отправлено сообщение в telegram: {message}')
 
 
-e = EmailNotifier
-t = TelegramNotifier
+e = EmailNotifier()
+t = TelegramNotifier()
 
 for obj in (e, t):
     obj.send('сообщение')
