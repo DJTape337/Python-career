@@ -21,7 +21,7 @@ class Rasp:
     def get_breaks(self, date):
         pairs = self.get_pairs(date)
         if not pairs or len(pairs) < 2:
-            return None
+            return pd.DataFrame()
         date = datetime.fromisoformat(date).date()
         out = {
             "Перерыв": [],
