@@ -24,21 +24,23 @@ class User:
         self.name = name
         self._email = email
 
-    def get_email(self):
+    @property
+    def email(self):
         return self._email
 
-    def set_email(self, email: str):
+    @email.setter
+    def email(self, email: str):
         if not '@' in email:
             raise ValueError('Некорректный email')
         self._email = email
 
 class NotificationService:
 
-    def __init__(self, notifiers: list):
-        if not all([isinstance(x, Notifier) for x in notifiers]):
+    def __init__(self, notifiers: list[Notifier]):
+        if not all(isinstance(x, Notifier) for x in notifiers):
             raise ValueError('Некорректный список уведомителей')
         self._notifiers = notifiers
 
-    def notify(self, message):
+    def notify(self, message: str):
         for notifier in self._notifiers:
             notifier.send(message)
