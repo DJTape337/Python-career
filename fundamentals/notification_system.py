@@ -4,7 +4,7 @@ class Notifier(ABC):
 
     @staticmethod
     @abstractmethod
-    def send(message: str):
+    def send(message: str) -> None:
         pass
 
 class EmailNotifier(Notifier):
@@ -36,11 +36,11 @@ class User:
 
 class NotificationService:
 
-    def __init__(self, notifiers: list[Notifier]):
+    def __init__(self, notifiers: list[Notifier]) -> None:
         if not all(isinstance(x, Notifier) for x in notifiers):
             raise ValueError('Некорректный список уведомителей')
         self._notifiers = notifiers
 
-    def notify(self, message: str):
+    def notify(self, message: str) -> None:
         for notifier in self._notifiers:
             notifier.send(message)
